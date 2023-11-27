@@ -6,9 +6,11 @@ using static UnityEditor.SceneView;
 public class PlayerMove : MonoBehaviour
 {
     private CameraMovement cameraMovement;
+    private ItemScript itemScript;
 
-    public float moveSpeed;
-    public float rotateSpeed;
+    public float moveSpd;
+    public float spdUP; // 증가 속도
+    public float rotateSpd;
 
     private float hAxis;
     private float vAxis;
@@ -16,6 +18,10 @@ public class PlayerMove : MonoBehaviour
     private Vector3 moveVec;
 
     public GameObject mainCamera;
+
+    private List<GameObject> tails = new List<GameObject>();
+    public GameObject tailObj;
+    public GameObject tailPoint;
 
     private Rigidbody rigid;
     private Animator anim;
@@ -28,20 +34,26 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
+        itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
         cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraMovement>();
+
         mainCamera = GameObject.Find("Main Camera");
 
-        moveSpeed = 3f;
-        rotateSpeed = 150f;
+        tails.Add(gameObject);
+
+        spdUP = 0.01f;
+        moveSpd = 2f;
+        rotateSpd = 150f;
     }
 
     void Update()
     {
         GetInput();
+        UseAnimator();
         Invoke("Move", 4); // 이동 준비 애니메이션 후 출발
         Rotate();
         CameraMove();
-        UseAnimator();
+        UpdateTails();
     }
 
     private void GetInput()
@@ -70,7 +82,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Move()
     {
-        transform.position += moveVec * moveSpeed * Time.deltaTime;
+        transform.position += moveVec * moveSpd * Time.deltaTime;
     }
 
     private void Rotate()
@@ -78,7 +90,7 @@ public class PlayerMove : MonoBehaviour
         if (moveVec != Vector3.zero && hAxis != 0)
         {
             Quaternion moveRotate = Quaternion.LookRotation(new Vector3(moveVec.x, 0, moveVec.z), Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotate, rotateSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotate, rotateSpd * Time.deltaTime);
         }
     }
 
@@ -103,21 +115,8 @@ public class PlayerMove : MonoBehaviour
             anim.SetBool("Walk_Anim", false);
         }*/
 
-        // 구르기
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (anim.GetBool("Roll_Anim"))
-            {
-                anim.SetBool("Roll_Anim", false);
-            }
-            else
-            {
-                anim.SetBool("Roll_Anim", true);
-            }
-        }
-
-        // 숨기
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        // 숨기 (애니메이션 추가 해야함)
+        /*if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             if (!anim.GetBool("Open_Anim"))
             {
@@ -127,6 +126,56 @@ public class PlayerMove : MonoBehaviour
             {
                 anim.SetBool("Open_Anim", false);
             }
+        }*/
+
+        // 구르기
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            anim.SetBool("Roll_Anim", true);
+            moveSpd += 2f;
+
+            StartCoroutine(StopRoll());
+        }
+    }
+
+    IEnumerator StopRoll()
+    {
+        yield return new WaitForSeconds(5f);
+
+        anim.SetBool("Roll_Anim", false);
+        moveSpd -= 2f;
+    }
+
+    public void StartPlusTail()
+    {
+        GameObject tail = Instantiate(tailObj, tailPoint.transform.position, Quaternion.identity);
+        tails.Add(tail);
+    }
+
+    private void UpdateTails()
+    {
+        if (tails.Count > 1)
+        {
+            for (int i = 1; i < tails.Count; i++)
+            {
+                GameObject tailPoint = tails[i - 1].transform.Find("TailPoint").gameObject;
+                float followSpd = 3f * Time.deltaTime; // 꼬리 속도
+                tails[i].transform.position = Vector3.Lerp(tails[i].transform.position, tailPoint.transform.position, followSpd);
+                tails[i].transform.rotation = Quaternion.Lerp(tails[i].transform.rotation, tails[i - 1].transform.rotation, followSpd);
+            }
+        }
+    }
+
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Item"))
+        {
+            Destroy(collision.gameObject);
+            itemScript.OnItemDestroyed(collision.gameObject);
+
+            StartPlusTail();
+            moveSpd += spdUP; // 아이템을 획득할 때마다 이동 속도 증가
         }
     }
 }

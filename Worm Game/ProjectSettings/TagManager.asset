@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - SubCamera
+  - Wall
+  - Item
+  - Tail
   layers:
   - Default
   - TransparentFX
@@ -12,8 +15,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Tail
   - 
   - 
   - 
