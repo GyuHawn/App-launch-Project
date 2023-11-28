@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.SceneView;
+using TMPro;
 
 public class PlayerMove : MonoBehaviour
 {
-    private CameraMovement cameraMovement;
+    private CameraScript cameraMovement;
     private ItemScript itemScript;
 
     public float moveSpd;
@@ -23,6 +23,9 @@ public class PlayerMove : MonoBehaviour
     public GameObject tailObj;
     public GameObject tailPoint;
 
+    public TMP_Text spdText;
+    public TMP_Text tailText;
+
     private Rigidbody rigid;
     private Animator anim;
 
@@ -35,7 +38,7 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
-        cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraMovement>();
+        cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraScript>();
 
         mainCamera = GameObject.Find("Main Camera");
 
@@ -54,6 +57,9 @@ public class PlayerMove : MonoBehaviour
         Rotate();
         CameraMove();
         UpdateTails();
+
+        spdText.text = "¼Óµµ : " + moveSpd.ToString();
+        tailText.text = "²¿¸® : " + (tails.Count - 1).ToString();
     }
 
     private void GetInput()

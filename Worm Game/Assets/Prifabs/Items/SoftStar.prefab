@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8282735719140437694}
   - component: {fileID: 161415457984061471}
   - component: {fileID: -49626859100527967}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SoftStar
   m_TagString: Item
   m_Icon: {fileID: 0}

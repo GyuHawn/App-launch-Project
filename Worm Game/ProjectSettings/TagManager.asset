@@ -8,6 +8,8 @@ TagManager:
   - Wall
   - Item
   - Tail
+  - FxTemporaire
+  - Monster
   layers:
   - Default
   - TransparentFX
@@ -17,8 +19,8 @@ TagManager:
   - UI
   - Player
   - Tail
-  - 
-  - 
+  - Monster
+  - Item
   - 
   - 
   - 

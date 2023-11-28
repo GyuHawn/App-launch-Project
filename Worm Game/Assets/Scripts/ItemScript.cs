@@ -83,9 +83,9 @@ public class ItemScript : MonoBehaviour
         currentSpawnedItems.Remove(item); // 파괴된 아이템 리스트에서 제거
     }
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(spawnPoints.transform.position, boxSize);
-    }
+    }*/
 }

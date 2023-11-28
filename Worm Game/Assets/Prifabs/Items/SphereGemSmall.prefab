@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7432991857420728569}
   - component: {fileID: 349524739766163263}
   - component: {fileID: 2136171821031704605}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SphereGemSmall
   m_TagString: Item
   m_Icon: {fileID: 0}
