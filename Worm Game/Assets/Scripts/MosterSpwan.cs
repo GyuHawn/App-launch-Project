@@ -1,39 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MosterSpwan : MonoBehaviour
 {
     public GameObject monsterPrifabs;
-    public int monsterNum;
+    public int maxMonsterNum;
+
+    public float spwanTime;
+
+    public List<GameObject> monsters = new List<GameObject>();
 
     public GameObject[] monsterSpwanPoint;
 
     void Start()
     {
-        monsterNum = 1;
-        Invoke("MonsterSpwan", 5f);
+        maxMonsterNum = 1;
+        spwanTime = 7f;
+        StartCoroutine(SpawnMonster());
     }
 
-    void MonsterSpwan()
+    public IEnumerator SpawnMonster()
     {
-        if(monsterNum >0)
+        while (true)
         {
-            Vector3 spwanPosition = SpwanPoint();
+            yield return new WaitForSeconds(spwanTime);
 
-            GameObject monster = Instantiate(monsterPrifabs, spwanPosition, Quaternion.identity);
-            monsterNum--;
+            if (monsters.Count < maxMonsterNum)
+            {
+                Vector3 spwanPosition = SpwanPoint();
 
+                GameObject monster = Instantiate(monsterPrifabs, spwanPosition, Quaternion.identity);
+                monsters.Add(monster);
+            }
         }
-    }
-
-    public IEnumerator RespawnMonster()
-    {
-
-        yield return new WaitForSeconds(3f);
-        monsterNum++;
-        MonsterSpwan();
     }
 
     private Vector3 SpwanPoint()

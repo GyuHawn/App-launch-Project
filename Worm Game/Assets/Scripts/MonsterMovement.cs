@@ -5,6 +5,7 @@ using UnityEngine;
 public class MonsterMovement : MonoBehaviour
 {
     private MosterSpwan mosterSpwan;
+    private SettingScript settingScript;
 
     public float spd;
 
@@ -16,22 +17,25 @@ public class MonsterMovement : MonoBehaviour
 
     private Vector3 playerPosition; // 플레이어 위치 저장
     private bool isPlayerCheck; // 플레이어 감지했는지 확인
+    public GameObject enemy;
 
     private Animator anim;
 
     void Start()
     {
         mosterSpwan = GameObject.Find("Manager").GetComponent<MosterSpwan>();
+        settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
         player = GameObject.FindWithTag("Player");
+        enemy = GameObject.Find("Enermy");
 
         anim = GetComponent<Animator>();
 
-        spd = 2f;
+        spd = 1.5f;
     }
 
     void Update()
     {
-        Anime();
+        Die();
 
         if (Physics.CheckBox(pos.transform.position, boxSize / 2, Quaternion.identity, LayerMask.GetMask("Player")))
         {
@@ -64,30 +68,34 @@ public class MonsterMovement : MonoBehaviour
         }
     }
 
-    void Anime()
+    public void SpdUp(float amount)
     {
-        if(spd != 0)
+        spd += amount;
+    }
+
+    void Die()
+    {
+        if (spd != 0)
         {
             anim.SetBool("Walk", true);
         }
         else
         {
+            enemy.GetComponent<MeshRenderer>().enabled = true;
             anim.SetBool("Walk", false);
             anim.SetTrigger("Attack");
+
+
+            mosterSpwan.monsters.Remove(gameObject);
+            StartCoroutine(DestroyMonster());
         }
     }
-    /* private void OnCollisionEnter(Collision collision)
-     {
-         if (collision.gameObject.CompareTag("Player"))
-         {
-             mosterSpwan.StartCoroutine(mosterSpwan.RespawnMonster());
-             Destroy(gameObject);
-         }
-     }*/
 
-    /*private void OnDrawGizmos()
+    IEnumerator DestroyMonster()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(pos.transform.position, boxHitSize);
-    }*/
+        yield return new WaitForSeconds(2f);
+        enemy.GetComponent<SphereCollider>().enabled = true;
+        yield return new WaitForSeconds(0.1f);
+        Destroy(gameObject);
+    }
 }

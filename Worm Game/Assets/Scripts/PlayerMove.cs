@@ -1,28 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class PlayerMove : MonoBehaviour
 {
+    private FixedJoystick joystick;
+
     private CameraScript cameraMovement;
     private ItemScript itemScript;
+    private SettingScript settingScript;
 
+    // 이동
     public float moveSpd;
     public float spdUP; // 증가 속도
-    public float rotateSpd;
+    public float tailRotateSpd;
 
-    private float hAxis;
+    public Button roll;
+    public float rollTime;
+    private bool isRoll = true;
+    private TMP_Text rollText;
+
+    public float hAxis;
     private float vAxis;
 
     private Vector3 moveVec;
 
+    // 미니맵
     public GameObject mainCamera;
 
-    private List<GameObject> tails = new List<GameObject>();
+    // 꼬리
+    public List<GameObject> tails = new List<GameObject>();
     public GameObject tailObj;
     public GameObject tailPoint;
 
+    // UI 텍스트
     public TMP_Text spdText;
     public TMP_Text tailText;
 
@@ -37,20 +50,28 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
+        joystick = GameObject.Find("Fixed Joystick").GetComponent<FixedJoystick>();
         itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
+        settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
         cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraScript>();
 
         mainCamera = GameObject.Find("Main Camera");
+        roll = GameObject.Find("RollButton").GetComponent<Button>();
+        rollText = GameObject.Find("RollTime").GetComponent<TMP_Text>();
+        roll.onClick.AddListener(Roll);
 
         tails.Add(gameObject);
 
-        spdUP = 0.01f;
+        spdUP = 0.1f;
         moveSpd = 2f;
-        rotateSpd = 150f;
+        tailRotateSpd = 200f;
+        rollTime = 0f;
     }
 
     void Update()
     {
+        Debug.Log(rollTime);
+
         GetInput();
         UseAnimator();
         Invoke("Move", 4); // 이동 준비 애니메이션 후 출발
@@ -58,13 +79,27 @@ public class PlayerMove : MonoBehaviour
         CameraMove();
         UpdateTails();
 
-        spdText.text = "속도 : " + moveSpd.ToString();
+        if (!isRoll)
+        {
+            if (rollTime > 0)
+            {
+                rollTime -= Time.deltaTime;
+            }
+            else
+            {
+                isRoll = true;
+            }
+        }
+
+        spdText.text = "속도 : " + moveSpd.ToString("F1");
         tailText.text = "꼬리 : " + (tails.Count - 1).ToString();
+        rollText.text = ((int)rollTime).ToString();
     }
 
     private void GetInput()
     {
-        hAxis = Input.GetAxisRaw("Horizontal");
+        hAxis = joystick.Horizontal;
+        //hAxis = Input.GetAxisRaw("Horizontal");
         vAxis = 1;
         //vAxis = Input.GetAxisRaw("Vertical");
 
@@ -96,7 +131,7 @@ public class PlayerMove : MonoBehaviour
         if (moveVec != Vector3.zero && hAxis != 0)
         {
             Quaternion moveRotate = Quaternion.LookRotation(new Vector3(moveVec.x, 0, moveVec.z), Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotate, rotateSpd * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, moveRotate, tailRotateSpd * Time.deltaTime);
         }
     }
 
@@ -137,9 +172,18 @@ public class PlayerMove : MonoBehaviour
         // 구르기
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Roll();
+        }
+    }
+
+    public void Roll()
+    {
+        if (isRoll)
+        {
+            isRoll = false;
+            rollTime = 15f;
             anim.SetBool("Roll_Anim", true);
             moveSpd += 2f;
-
             StartCoroutine(StopRoll());
         }
     }
@@ -173,6 +217,22 @@ public class PlayerMove : MonoBehaviour
     }
 
 
+    public void OnTailCollision(GameObject tail)
+    {
+        int tailIndex = tails.IndexOf(tail); // 출돌한 꼬리
+
+        // 꼬리 확인
+        if (tailIndex >= 0)
+        {
+            // 다음 전체 꼬리 삭제
+            for (int i = tails.Count - 1; i >= tailIndex; i--)
+            {
+                Destroy(tails[i]);
+                tails.RemoveAt(i);
+            }
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Item"))
@@ -181,7 +241,30 @@ public class PlayerMove : MonoBehaviour
             itemScript.OnItemDestroyed(collision.gameObject);
 
             StartPlusTail();
-            moveSpd += spdUP; // 아이템을 획득할 때마다 이동 속도 증가
+            moveSpd += spdUP; // 아이템 획득시 이동 속도 증가
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Enermy"))
+        {
+            if (settingScript.gaming)
+            {
+                int tailIndex = tails.IndexOf(other.gameObject); // IndexOf - 리스트, 배열에서 지정된 요소의 인덱스를 검색하는 메서드
+
+                if (tailIndex >= 0)
+                {
+                    for (int i = tails.Count - 1; i >= tailIndex; i--)
+                    {
+                        Destroy(tails[i]);
+                        tails.RemoveAt(i);
+                    }
+                }
+
+                Destroy(gameObject);
+                settingScript.gaming = false;
+            }
         }
     }
 }
