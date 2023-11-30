@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
+
 
 public class PlayerMove : MonoBehaviour
 {
@@ -35,6 +37,14 @@ public class PlayerMove : MonoBehaviour
     public GameObject tailObj;
     public GameObject tailPoint;
 
+    // 결과
+    public int maxTailCount; // 최대꼬리 갯수
+    public int TailScore; // 최대꼬리 갯수 * 50 
+    public int itemCount; // 아이템 * 100
+    public int itemScore;
+    public float gameTime; // 초당 * 1
+    public int FinalScore; // 최종점수
+
     // UI 텍스트
     public TMP_Text spdText;
     public TMP_Text tailText;
@@ -66,6 +76,8 @@ public class PlayerMove : MonoBehaviour
         moveSpd = 2f;
         tailRotateSpd = 200f;
         rollTime = 0f;
+        maxTailCount = 0;
+        itemCount = 0;
     }
 
     void Update()
@@ -200,6 +212,12 @@ public class PlayerMove : MonoBehaviour
     {
         GameObject tail = Instantiate(tailObj, tailPoint.transform.position, Quaternion.identity);
         tails.Add(tail);
+
+        // 최대 꼬리 개수 업데이트
+        if (tails.Count > maxTailCount)
+        {
+            maxTailCount = tails.Count;
+        }
     }
 
     private void UpdateTails()
@@ -215,6 +233,8 @@ public class PlayerMove : MonoBehaviour
             }
         }
     }
+
+
 
 
     public void OnTailCollision(GameObject tail)
@@ -233,6 +253,33 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    public void EndGame()
+    {
+        // 게임 종료 처리
+        settingScript.gaming = false;
+
+        // 스코어 계산
+        gameTime = settingScript.timer; // 게임 시간
+        TailScore = maxTailCount * 50; // 최대 꼬리 점수
+        itemScore = itemCount * 100; // 아이템 점수
+        FinalScore = (int)(gameTime + TailScore + itemScore); // 최종 스코어
+
+        // 고유한 키 생성
+        string key = "FinalScore_" + System.Guid.NewGuid().ToString();
+
+        // 최종 점수 저장
+        PlayerPrefs.SetInt(key, FinalScore);
+
+        // 키 저장
+        string existingKeys = PlayerPrefs.GetString("ScoreKeys", "");
+        existingKeys += key + ",";
+        PlayerPrefs.SetString("ScoreKeys", existingKeys);
+
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene("MainMenu");
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Item"))
@@ -241,7 +288,9 @@ public class PlayerMove : MonoBehaviour
             itemScript.OnItemDestroyed(collision.gameObject);
 
             StartPlusTail();
-            moveSpd += spdUP; // 아이템 획득시 이동 속도 증가
+            moveSpd += spdUP;
+
+            itemCount += 1;
         }
     }
 
@@ -263,7 +312,7 @@ public class PlayerMove : MonoBehaviour
                 }
 
                 Destroy(gameObject);
-                settingScript.gaming = false;
+                EndGame();
             }
         }
     }

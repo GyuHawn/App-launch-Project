@@ -6,7 +6,7 @@ using UnityEngine.UIElements.Experimental;
 
 public class SettingScript : MonoBehaviour
 {
-    public float timer;
+    public float timer; // 게임 진행 시간
     public TMP_Text timeText;
 
     public int min;
