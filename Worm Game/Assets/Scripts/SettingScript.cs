@@ -16,6 +16,10 @@ public class SettingScript : MonoBehaviour
     private float spdAmount = 0.1f; // 속도 증가량
     private float spdUpTimeReset = 0f; // 속도 증가 후 경과 시간
 
+    // 플레이어 스킬 UI
+    public GameObject skillOn;
+    public GameObject skillOff;
+
     public bool gaming;
 
     void Start()
@@ -39,10 +43,6 @@ public class SettingScript : MonoBehaviour
                 spdUpTimeReset = 0f;
             }
         }
-        else
-        {
-            timer = 0;
-        }
 
         min = (int)(timer / 60);
         sec = (int)(timer % 60);
@@ -57,4 +57,5 @@ public class SettingScript : MonoBehaviour
             monster.SpdUp(spdAmount);
         }
     }
+
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class MonsterMovement : MonoBehaviour
 {
     private MosterSpwan mosterSpwan;
-    private SettingScript settingScript;
+    private AudioManager audioManager;
 
     public float spd;
 
@@ -18,13 +18,14 @@ public class MonsterMovement : MonoBehaviour
     private Vector3 playerPosition; // 플레이어 위치 저장
     private bool isPlayerCheck; // 플레이어 감지했는지 확인
     public GameObject enemy;
+    public GameObject enemyPrifab;
 
     private Animator anim;
 
     void Start()
     {
         mosterSpwan = GameObject.Find("Manager").GetComponent<MosterSpwan>();
-        settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
         player = GameObject.FindWithTag("Player");
         enemy = GameObject.Find("Enermy");
 
@@ -81,16 +82,16 @@ public class MonsterMovement : MonoBehaviour
         }
         else
         {
+            audioManager.MonsterAttackSound();
             enemy.GetComponent<MeshRenderer>().enabled = true;
             anim.SetBool("Walk", false);
             anim.SetTrigger("Attack");
-
 
             mosterSpwan.monsters.Remove(gameObject);
             StartCoroutine(DestroyMonster());
         }
     }
-
+    
     IEnumerator DestroyMonster()
     {
         yield return new WaitForSeconds(2f);

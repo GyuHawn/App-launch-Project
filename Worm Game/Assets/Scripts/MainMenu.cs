@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private AudioManager audioManager;
+
     public GameObject uiMenu;
     public GameObject scoreMenu;
 
@@ -16,6 +18,8 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+
         // 저장된 모든 최종 점수 불러오기
         string existingKeys = PlayerPrefs.GetString("ScoreKeys", "");
         if (!string.IsNullOrEmpty(existingKeys))
@@ -55,18 +59,45 @@ public class MainMenu : MonoBehaviour
 
     public void GameStart()
     {
+        audioManager.ButtonSound();
         SceneManager.LoadScene("Main");
     }
 
     public void OnScoreMenu()
     {
+        audioManager.ButtonSound();
         uiMenu.SetActive(false);
         scoreMenu.SetActive(true);
     }
 
     public void OffScoreMenu()
     {
+        audioManager.ButtonSound();
         uiMenu.SetActive(true);
         scoreMenu.SetActive(false);
+    }
+
+    public void ResetScore()
+    {
+        audioManager.ButtonSound();
+        // PlayerPrefs에서 키 삭제
+        string existingKeys = PlayerPrefs.GetString("ScoreKeys", "");
+        if (!string.IsNullOrEmpty(existingKeys))
+        {
+            string[] keys = existingKeys.Split(',');
+            foreach (var key in keys)
+            {
+                if (!string.IsNullOrEmpty(key))
+                {
+                    PlayerPrefs.DeleteKey(key);
+                }
+            }
+        }
+
+        // 리스트 비우기
+        scores.Clear();
+
+        // 텍스트 업데이트
+        UpdateScoreText();
     }
 }

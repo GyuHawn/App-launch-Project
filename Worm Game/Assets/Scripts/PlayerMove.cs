@@ -13,6 +13,8 @@ public class PlayerMove : MonoBehaviour
     private CameraScript cameraMovement;
     private ItemScript itemScript;
     private SettingScript settingScript;
+    private GameOverScore gameOverScore;
+    private AudioManager audioManager;
 
     // 이동
     public float moveSpd;
@@ -43,8 +45,8 @@ public class PlayerMove : MonoBehaviour
     public int itemCount; // 아이템 * 100
     public int itemScore;
     public float gameTime; // 초당 * 1
-    public int FinalScore; // 최종점수
-
+    public int finalScore; // 최종점수
+    
     // UI 텍스트
     public TMP_Text spdText;
     public TMP_Text tailText;
@@ -63,10 +65,12 @@ public class PlayerMove : MonoBehaviour
         joystick = GameObject.Find("Fixed Joystick").GetComponent<FixedJoystick>();
         itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
         settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
+        gameOverScore = GameObject.Find("Manager").GetComponent<GameOverScore>();
         cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraScript>();
+        audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 
         mainCamera = GameObject.Find("Main Camera");
-        roll = GameObject.Find("RollButton").GetComponent<Button>();
+        roll = GameObject.Find("RollButton").GetComponent<Button>();        
         rollText = GameObject.Find("RollTime").GetComponent<TMP_Text>();
         roll.onClick.AddListener(Roll);
 
@@ -79,11 +83,9 @@ public class PlayerMove : MonoBehaviour
         maxTailCount = 0;
         itemCount = 0;
     }
-
+    
     void Update()
     {
-        Debug.Log(rollTime);
-
         GetInput();
         UseAnimator();
         Invoke("Move", 4); // 이동 준비 애니메이션 후 출발
@@ -95,17 +97,28 @@ public class PlayerMove : MonoBehaviour
         {
             if (rollTime > 0)
             {
+                settingScript.skillOn.SetActive(false);
+                settingScript.skillOff.SetActive(true);
                 rollTime -= Time.deltaTime;
             }
             else
             {
                 isRoll = true;
+                settingScript.skillOn.SetActive(true);
+                settingScript.skillOff.SetActive(false);
             }
         }
 
         spdText.text = "속도 : " + moveSpd.ToString("F1");
         tailText.text = "꼬리 : " + (tails.Count - 1).ToString();
-        rollText.text = ((int)rollTime).ToString();
+        if(rollTime > 0)
+        {
+            rollText.text = ((int)rollTime).ToString();
+        }
+        else
+        {
+            rollText.text = "";
+        }
     }
 
     private void GetInput()
@@ -234,9 +247,6 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
-
-
     public void OnTailCollision(GameObject tail)
     {
         int tailIndex = tails.IndexOf(tail); // 출돌한 꼬리
@@ -260,15 +270,17 @@ public class PlayerMove : MonoBehaviour
 
         // 스코어 계산
         gameTime = settingScript.timer; // 게임 시간
-        TailScore = maxTailCount * 50; // 최대 꼬리 점수
-        itemScore = itemCount * 100; // 아이템 점수
-        FinalScore = (int)(gameTime + TailScore + itemScore); // 최종 스코어
+        TailScore = maxTailCount * 100; // 최대 꼬리 점수
+        itemScore = itemCount * 50; // 아이템 점수
+        finalScore = (int)(gameTime + TailScore + itemScore); // 최종 스코어
+
+        gameOverScore.finalScore.SetActive(true);
 
         // 고유한 키 생성
         string key = "FinalScore_" + System.Guid.NewGuid().ToString();
 
         // 최종 점수 저장
-        PlayerPrefs.SetInt(key, FinalScore);
+        PlayerPrefs.SetInt(key, finalScore);
 
         // 키 저장
         string existingKeys = PlayerPrefs.GetString("ScoreKeys", "");
@@ -276,14 +288,13 @@ public class PlayerMove : MonoBehaviour
         PlayerPrefs.SetString("ScoreKeys", existingKeys);
 
         PlayerPrefs.Save();
-
-        SceneManager.LoadScene("MainMenu");
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Item"))
         {
+            audioManager.GetItemSound();
             Destroy(collision.gameObject);
             itemScript.OnItemDestroyed(collision.gameObject);
 
