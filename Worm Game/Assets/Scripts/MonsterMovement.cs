@@ -82,7 +82,6 @@ public class MonsterMovement : MonoBehaviour
         }
         else
         {
-            audioManager.MonsterAttackSound();
             enemy.GetComponent<MeshRenderer>().enabled = true;
             anim.SetBool("Walk", false);
             anim.SetTrigger("Attack");
@@ -94,6 +93,7 @@ public class MonsterMovement : MonoBehaviour
     
     IEnumerator DestroyMonster()
     {
+        audioManager.MonsterAttackSound();
         yield return new WaitForSeconds(2f);
         enemy.GetComponent<SphereCollider>().enabled = true;
         yield return new WaitForSeconds(0.1f);

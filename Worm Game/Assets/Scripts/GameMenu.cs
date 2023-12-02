@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMenu : MonoBehaviour
 {
@@ -8,8 +9,13 @@ public class GameMenu : MonoBehaviour
 
     public bool isPaused = false; // 게임 상태
 
+    public GameObject stop;
+    public GameObject go;
+    
     public GameObject gameMenu;
     public GameObject colorPicker;
+
+    public GameObject endGameMenu;
 
     private void Start()
     {
@@ -33,12 +39,16 @@ public class GameMenu : MonoBehaviour
     {
         Time.timeScale = 0f;  // 게임의 시간 흐름 멈춤
         isPaused = true;
+        stop.SetActive(false);
+        go.SetActive(true);
     }
 
     void StartGame()
     {
         Time.timeScale = 1f;  // 게임의 시간 흐름 재개
         isPaused = false;
+        stop.SetActive(true);
+        go.SetActive(false);
     }
 
     public void OnGameMenu()
@@ -51,5 +61,14 @@ public class GameMenu : MonoBehaviour
     {
         audioManager.ButtonSound();
         colorPicker.SetActive(!colorPicker.activeSelf);
+    }
+
+    public void EndGameMenu()
+    {
+        endGameMenu.SetActive(!endGameMenu.activeSelf);
+    }
+    public void EndGame()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
