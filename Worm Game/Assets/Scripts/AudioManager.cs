@@ -22,7 +22,7 @@ public class AudioManager : MonoBehaviour
         float volume = PlayerPrefs.GetFloat("Volume", 1.0f);
         audioSlider.value = volume;
 
-        if (SceneManager.GetActiveScene().name == "MainMenu")
+        if (SceneManager.GetActiveScene().name == "MainMenu" || SceneManager.GetActiveScene().name == "Loding")
         {
             bgmMainMenu.volume = volume;
             bgmMainMenu.Play();

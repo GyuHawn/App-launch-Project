@@ -1011,7 +1011,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &173255610
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5282,6 +5282,7 @@ GameObject:
   - component: {fileID: 1317400643}
   - component: {fileID: 1317400644}
   - component: {fileID: 1317400645}
+  - component: {fileID: 1317400646}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -5404,6 +5405,21 @@ MonoBehaviour:
   gameMenu: {fileID: 173255609}
   colorPicker: {fileID: 826971222}
   endGameMenu: {fileID: 173876516}
+--- !u!114 &1317400646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317400639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e008b793594c040a90456320723825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorPicker: {fileID: 1955254110}
+  mapColor: {fileID: 2100000, guid: b1592a3a0adfa6b48bd887bcc759fab3, type: 2}
+  trigger: {fileID: 1955254112}
 --- !u!1 &1336357238
 GameObject:
   m_ObjectHideFlags: 0
@@ -7417,6 +7433,7 @@ GameObject:
   - component: {fileID: 1955254109}
   - component: {fileID: 1955254111}
   - component: {fileID: 1955254110}
+  - component: {fileID: 1955254112}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -7481,6 +7498,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955254108}
   m_CullTransparentMesh: 1
+--- !u!114 &1955254112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955254108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
 --- !u!224 &1985294059 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
@@ -7519,7 +7549,7 @@ RectTransform:
   m_Father: {fileID: 1411413802}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7911,8 +7941,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 133778944}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

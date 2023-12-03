@@ -60,7 +60,7 @@ public class MainMenu : MonoBehaviour
     public void GameStart()
     {
         audioManager.ButtonSound();
-        SceneManager.LoadScene("Main");
+        LodingController.LoadScene("Main");
     }
 
     public void OnScoreMenu()
