@@ -43,7 +43,7 @@ public class LodingController : MonoBehaviour
                 lodingBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer);
                 if(lodingBar.fillAmount >= 1f)
                 {
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(1f);
 
                     op.allowSceneActivation = true;
                     yield break;

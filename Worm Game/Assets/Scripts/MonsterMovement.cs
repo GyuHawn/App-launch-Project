@@ -20,6 +20,8 @@ public class MonsterMovement : MonoBehaviour
     public GameObject enemy;
     public GameObject enemyPrifab;
 
+    private bool isDead = false;
+
     private Animator anim;
 
     void Start()
@@ -82,19 +84,23 @@ public class MonsterMovement : MonoBehaviour
         }
         else
         {
-            enemy.GetComponent<MeshRenderer>().enabled = true;
-            anim.SetBool("Walk", false);
-            anim.SetTrigger("Attack");
+            if (!isDead) 
+            {
+                isDead = true;
+                enemy.GetComponent<MeshRenderer>().enabled = true;
+                anim.SetBool("Walk", false);
+                anim.SetTrigger("Attack");
 
-            mosterSpwan.monsters.Remove(gameObject);
-            StartCoroutine(DestroyMonster());
+                mosterSpwan.monsters.Remove(gameObject);
+                StartCoroutine(DestroyMonster());
+            }
         }
     }
     
     IEnumerator DestroyMonster()
     {
-        audioManager.MonsterAttackSound();
         yield return new WaitForSeconds(2f);
+                audioManager.MonsterAttackSound();
         enemy.GetComponent<SphereCollider>().enabled = true;
         yield return new WaitForSeconds(0.1f);
         Destroy(gameObject);
