@@ -63,6 +63,7 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         joystick = GameObject.Find("Fixed Joystick").GetComponent<FixedJoystick>();
+
         itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
         settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
         gameOverScore = GameObject.Find("Manager").GetComponent<GameOverScore>();
@@ -72,7 +73,8 @@ public class PlayerMove : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera");
         roll = GameObject.Find("RollButton").GetComponent<Button>();        
         rollText = GameObject.Find("RollTime").GetComponent<TMP_Text>();
-        roll.onClick.AddListener(Roll);
+        // roll.onClick.AddListener(Roll);
+        roll.onClick.AddListener(() => Roll());
 
         tails.Add(gameObject);
 
@@ -83,12 +85,13 @@ public class PlayerMove : MonoBehaviour
         maxTailCount = 0;
         itemCount = 0;
     }
-    
+
+
     void Update()
     {
         GetInput();
-        UseAnimator();
-        Invoke("Move", 4); // 이동 준비 애니메이션 후 출발
+        UseAnimator();        
+        Invoke("Move", 4); // 이동 준비 애니메이션 후 출발        
         Rotate();
         CameraMove();
         UpdateTails();
