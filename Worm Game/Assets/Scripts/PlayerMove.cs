@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
     private SettingScript settingScript;
     private GameOverScore gameOverScore;
     private AudioManager audioManager;
+    private PortalScript portalScript;
 
     // ¿Ãµø
     public float moveSpd;
@@ -67,6 +68,7 @@ public class PlayerMove : MonoBehaviour
         itemScript = GameObject.Find("Manager").GetComponent<ItemScript>();
         settingScript = GameObject.Find("Manager").GetComponent<SettingScript>();
         gameOverScore = GameObject.Find("Manager").GetComponent<GameOverScore>();
+        portalScript = GameObject.Find("Manager").GetComponent<PortalScript>();
         cameraMovement = GameObject.Find("Main Camera").GetComponent<CameraScript>();
         audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 
@@ -327,6 +329,24 @@ public class PlayerMove : MonoBehaviour
 
                 Destroy(gameObject);
                 EndGame();
+            }
+        }
+
+        if (other.gameObject.CompareTag("Portal"))
+        {
+            if (portalScript.portalTime <= 0)
+            {
+                if (other.gameObject.name == "Portal1")
+                {
+                    transform.position = portalScript.portal2Point.transform.position;
+                    transform.Rotate(0f, 180f, 0f);
+                }
+                if (other.gameObject.name == "Portal2")
+                {
+                    transform.position = portalScript.portal1Point.transform.position;
+                    transform.Rotate(0f, 180f, 0f);
+                }
+                portalScript.UsePortal();
             }
         }
     }
