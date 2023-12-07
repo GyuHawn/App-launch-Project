@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MosterSpwan : MonoBehaviour
 {
     private AudioManager audioManager;
 
-    public GameObject monsterPrifabs;
+    public GameObject monsterPrifab1;
+    public GameObject monsterPrifab2;
     public int maxMonsterNum;
 
     public float spwanTime;
@@ -35,8 +37,16 @@ public class MosterSpwan : MonoBehaviour
                 Vector3 spwanPosition = SpwanPoint();
 
                 audioManager.MonsterSpwanSound();
-                GameObject monster = Instantiate(monsterPrifabs, spwanPosition, Quaternion.identity);
-                monsters.Add(monster);
+                if (SceneManager.GetActiveScene().name == "Main")
+                {
+                    GameObject monster = Instantiate(monsterPrifab1, spwanPosition, Quaternion.identity);
+                    monsters.Add(monster);
+                }
+                if (SceneManager.GetActiveScene().name == "Main1")
+                {
+                    GameObject monster = Instantiate(monsterPrifab2, spwanPosition, Quaternion.identity);
+                    monsters.Add(monster);
+                }
             }
         }
     }

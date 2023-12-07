@@ -5476,7 +5476,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3218942938676504a9699a5e4a6a373a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterPrifabs: {fileID: 6633089740556539282, guid: d3e35e1faaf11444a9b042490670f25f, type: 3}
+  monsterPrifab1: {fileID: 6633089740556539282, guid: d3e35e1faaf11444a9b042490670f25f, type: 3}
+  monsterPrifab2: {fileID: 6633089740556539282, guid: 11676efc17a95564ca5605f24ec81240, type: 3}
   maxMonsterNum: 0
   spwanTime: 0
   monsters: []
@@ -5557,6 +5558,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorPicker: {fileID: 1955254110}
   mapColor: {fileID: 2100000, guid: b1592a3a0adfa6b48bd887bcc759fab3, type: 2}
+  map2Color: {fileID: 0}
   trigger: {fileID: 1955254112}
 --- !u!1 &1336357238
 GameObject:
