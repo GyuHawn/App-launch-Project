@@ -1,21 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ItemScript : MonoBehaviour
 {
     public GameObject[] items; // 생성 아이템
     public int spawnNum; // 생성 아이템 수
 
-    public GameObject spawnPoints;
+    // 맵1
+    public GameObject spwanPoint;
     public Vector3 boxSize;
+
+    // 맵2
+    public GameObject[] spwanPoints;
 
     private List<GameObject> currentSpawnedItems = new List<GameObject>(); // 생성된 아이템
 
     void Start()
     {
         spawnNum = 3;
-        SpawnItems();
+        if(SceneManager.GetActiveScene().name == "Main")
+        {
+            SpawnItems();
+        }
+        else if(SceneManager.GetActiveScene().name == "Main1")
+        {
+            SpawnItems();
+        }
     }
 
     void Update()
@@ -46,15 +58,29 @@ public class ItemScript : MonoBehaviour
     // 생성할 위치 반환
     private Vector3 GetSpawnPosition()
     {
-        // 생성 가능한 위치 찾기
-        for (int i = 0; i < 100; i++)
+        if (SceneManager.GetActiveScene().name == "Main")
         {
-            Vector3 spawnPosition = new Vector3(Random.Range(-boxSize.x / 2, boxSize.x / 2), Random.Range(-boxSize.y / 2, boxSize.y / 2), Random.Range(-boxSize.z / 2, boxSize.z / 2)) + spawnPoints.transform.position;
+            // 생성 가능한 위치 찾기
+            for (int i = 0; i < 100; i++)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(-boxSize.x / 2, boxSize.x / 2), Random.Range(-boxSize.y / 2, boxSize.y / 2), Random.Range(-boxSize.z / 2, boxSize.z / 2)) + spwanPoint.transform.position;
+
+                // 생성할 위치 검사
+                if (IsPositionValid(spawnPosition))
+                {
+                    return spawnPosition;
+                }
+            }
+        }
+        else if (SceneManager.GetActiveScene().name == "Main1")
+        {
+            // 랜덤하게 spawnPoint 선택
+            GameObject randomSpawnPoint = spwanPoints[Random.Range(0, spwanPoints.Length)];
 
             // 생성할 위치 검사
-            if (IsPositionValid(spawnPosition))
+            if (IsPositionValid(randomSpawnPoint.transform.position))
             {
-                return spawnPosition;
+                return randomSpawnPoint.transform.position;
             }
         }
 
@@ -69,6 +95,12 @@ public class ItemScript : MonoBehaviour
         {
             // 거리가 5이상인지 확인
             if (Vector3.Distance(item.transform.position, position) < 5)
+            {
+                return false;
+            }
+
+            // 같은 위치인지 확인
+            if (item.transform.position == position)
             {
                 return false;
             }

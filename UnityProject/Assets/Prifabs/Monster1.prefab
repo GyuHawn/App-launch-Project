@@ -25480,7 +25480,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!114 &7217995245297312919
 MonoBehaviour:
@@ -25495,14 +25495,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spd: 0
-  normalSpeed: 1.5
   chaseSpeed: 5
   player: {fileID: 0}
   pos: {fileID: 5315183273675232376}
   boxHitSize: {x: 15, y: 5, z: 15}
   enemy: {fileID: 0}
   enemyPrefab: {fileID: 7980854466065956714, guid: 6d71a11bd52a82148b7460714842dd43, type: 3}
-  navMeshData: {fileID: 23800000, guid: a40394c066d40794d8e7c5cce7c40780, type: 2}
+  navMeshData: {fileID: 23800000, guid: 9ba0226f700319341bdc88477bc096ae, type: 2}
 --- !u!1 &6894939750439628205
 GameObject:
   m_ObjectHideFlags: 0

@@ -339,12 +339,10 @@ public class PlayerMove : MonoBehaviour
                 if (other.gameObject.name == "Portal1")
                 {
                     transform.position = portalScript.portal2Point.transform.position;
-                    transform.Rotate(0f, 180f, 0f);
                 }
                 if (other.gameObject.name == "Portal2")
                 {
                     transform.position = portalScript.portal1Point.transform.position;
-                    transform.Rotate(0f, 180f, 0f);
                 }
                 portalScript.UsePortal();
             }

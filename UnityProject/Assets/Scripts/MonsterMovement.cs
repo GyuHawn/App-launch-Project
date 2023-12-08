@@ -100,7 +100,7 @@ public class MonsterMovement : MonoBehaviour
     IEnumerator DestroyMonster()
     {
         yield return new WaitForSeconds(2f);
-                audioManager.MonsterAttackSound();
+        audioManager.MonsterAttackSound();
         enemy.GetComponent<SphereCollider>().enabled = true;
         yield return new WaitForSeconds(0.1f);
         Destroy(gameObject);

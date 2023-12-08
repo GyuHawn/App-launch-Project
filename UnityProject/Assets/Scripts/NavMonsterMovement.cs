@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-// 현재 이동은 가능 벽에 막혔을때 다른 길 찾도록
-
 public class NavMonsterMovement : MonoBehaviour
 {
     private MosterSpwan monsterSpawn;
@@ -45,6 +43,13 @@ public class NavMonsterMovement : MonoBehaviour
         navMeshAgent.enabled = true;
     }
 
+    public void ResetMonster()
+    {
+        spd = 1.5f;
+        isDead = false;
+        isPlayerCheck = false;
+    }
+
     void Update()
     {
         Die();
@@ -64,7 +69,7 @@ public class NavMonsterMovement : MonoBehaviour
         }
         else
         {
-            navMeshAgent.speed = spd;
+            navMeshAgent.speed = isPlayerCheck ? chaseSpeed : spd;
             SetPlayerDestination();
         }
     }
@@ -78,14 +83,11 @@ public class NavMonsterMovement : MonoBehaviour
         }
     }
 
-    public void SpdUp(float amount)
-    {
-        spd += amount;
-    }
-
     void Die()
     {
-        if (spd != 0)
+        if (navMeshAgent == null) return;
+
+        if (navMeshAgent.speed != 0)
         {
             anim.SetBool("Walk", true);
         }
@@ -94,7 +96,11 @@ public class NavMonsterMovement : MonoBehaviour
             if (!isDead)
             {
                 isDead = true;
-                enemy.GetComponent<MeshRenderer>().enabled = true;
+                if (enemy != null)
+                {
+                    enemy.GetComponent<MeshRenderer>().enabled = true;
+                }
+
                 anim.SetBool("Walk", false);
                 anim.SetTrigger("Attack");
 
@@ -104,13 +110,13 @@ public class NavMonsterMovement : MonoBehaviour
         }
     }
 
-
     IEnumerator DestroyMonster()
     {
         yield return new WaitForSeconds(2f);
         audioManager.MonsterAttackSound();
         enemy.GetComponent<SphereCollider>().enabled = true;
         yield return new WaitForSeconds(0.1f);
+
         Destroy(gameObject);
     }
 }
